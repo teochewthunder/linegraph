@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Line Graph</title>
+
+		<style>
+			div {outline:0px solid #FFAA00;}
+
+			#graph_container
+			{
+				height:500px;
+			}
+
+			#datacol_container
+			{
+				height:100%;
+				width:95%;
+				float:left;
+			}
+
+			.col_container
+			{
+				height:100%;
+				width:95%;
+				float:left;
+				margin-right:-100%;
+			}
+
+			.col_section
+			{
+				width:200px;
+				height:100%;
+				float:left;
+			}
+
+			.data_container
+			{
+				width:100%;
+				height:80%;
+				background-color:transparent;
+				overflow:hidden;
+			}
+
+			.data_label
+			{
+				margin: 0 auto 0 auto;
+				text-align:left;
+				width:100%;
+				height:20%;
+				color:#000000;
+				font-weight:bold;
+				font-family:verdana;
+				font-size:0.8em;
+				border-top:1px solid #000000;
+			}
+
+			.data_node
+			{
+				width:10px;
+				height:10px;
+				margin-left:0%;
+				transition:all 1s;
+				color:#FFFFFF;
+				font-weight:bold;
+				font-family:verdana;
+				font-size:0.4em;
+				text-align:center;
+			}
+
+			.data_line
+			{
+				height:2px;
+				margin-left:5px;
+				margin-top:-5px;
+				transform-origin:0% 50%;
+				transition:all 1s;
+			}
+
+			#legend_container
+			{
+				width:50%;
+				margin:5% auto 0 auto;
+				padding:0.5em;
+			}
+
+			#legend_container
+			{
+				color:#FFFFFF;
+				font-weight:bold;
+				font-family:verdana;
+				font-size:1em;
+				width:50%;
+				margin:5% auto 0 auto;
+				padding:0.5em;
+			}
+
+			.legend_row
+			{
+				width:100%;
+				height:1.5em;
+			}
+
+			#legend_row:after
+			{
+				display:block;
+				content:"";
+				clear:both;
+			}
+
+			.legend_color
+			{
+				width:1em;
+				height:1em;
+				float:left;
+			}
+
+			.legend_label
+			{
+				height:1em;
+				float:left;
+				color:#000000;
+				font-weight:bold;
+				font-family:verdana;
+				font-size:1em;
+				margin-left:1em;
+			}
+
+			#scale_container
+			{
+				height:80%;
+				width:20px;
+				float:left;
+				border-bottom:1px solid #000000;
+			}
+
+			.scale_unit
+			{
+				width:100%;
+				border-top:1px solid #000000;
+				border-left:1px solid #000000;
+				color:#FF0000;
+				text-align:right;
+				font-weight:bold;
+				font-family:verdana;
+				font-size:0.5em;
+			}
+		</style>
+
+		<script>
+			var graphdata = 
+			{
+				"cols":
+				[
+					{
+						"title":"Fernando Torres",
+						"color":"#FF00FF",
+						"stats": 
+						[
+							{"year":2007,"goals":24,"appearances":33},
+							{"year":2008,"goals":14,"appearances":24},
+							{"year":2009,"goals":18,"appearances":22},
+							{"year":2010,"goals":9,"appearances":23},
+						]
+					},
+					{
+						"title":"Steven Gerrard",
+						"color":"#440000",
+						"stats": 
+						[
+							{"year":2007,"goals":11,"appearances":36},
+							{"year":2008,"goals":16,"appearances":34},
+							{"year":2009,"goals":9,"appearances":31},
+							{"year":2010,"goals":4,"appearances":33},
+						]
+					},
+					{
+						"title":"Dirk Kuyt",
+						"color":"#FFFF00",
+						"stats": 
+						[
+							{"year":2007,"goals":3,"appearances":34},
+							{"year":2008,"goals":12,"appearances":32},
+							{"year":2009,"goals":9,"appearances":38},
+							{"year":2010,"goals":13,"appearances":37},
+						]
+					},
+					{
+						"title":"Ryan Babel",
+						"color":"#00AA00",
+						"stats": 
+						[
+							{"year":2007,"goals":4,"appearances":30},
+							{"year":2008,"goals":3,"appearances":27},
+							{"year":2009,"goals":4,"appearances":25},
+							{"year":2010,"goals":1,"appearances":1},
+						]
+					},
+					{
+						"title":"Yossi Benayoun",
+						"color":"#000044",
+						"stats": 
+						[
+							{"year":2007,"goals":4,"appearances":30},
+							{"year":2008,"goals":8,"appearances":32},
+							{"year":2009,"goals":6,"appearances":30},
+						]
+					},
+					{
+						"title":"David N'gog",
+						"color":"#006699",
+						"stats": 
+						[
+							{"year":2008,"goals":2,"appearances":14},
+							{"year":2009,"goals":5,"appearances":24},
+							{"year":2010,"goals":2,"appearances":25},
+						]
+					},
+				],
+				"rows":[2007,2008,2009,2010],
+				"stats":["goals","appearances"]
+			}; 
+
+			function populate()
+			{
+				var datacol, container, node, line, label;
+				var graph = document.getElementById("datacol_container");
+
+				for (var i=0;i<graphdata.cols.length;i++)
+				{
+					col = document.createElement("div");
+					col.className = "col_container";
+
+					for (var j=0;j<graphdata.rows.length;j++)
+					{
+						datacol = document.createElement("div");
+						datacol.className = "col_section";
+
+						container = document.createElement("div");
+						container.className = "data_container";
+
+						node = document.createElement("div");
+						node.className = "data_node";
+						node.style.backgroundColor = graphdata.cols[i].color;
+						node.id = "node_" + i + "_" + j;
+
+						container.appendChild(node);
+
+						if (j<graphdata.rows.length-1)
+						{
+							line = document.createElement("div");
+							line.className = "data_line";
+							line.style.backgroundColor = graphdata.cols[i].color;
+							line.id = "line_" + i + "_" + j;
+
+							container.appendChild(line);
+						}
+
+						label = document.createElement("div");
+						label.className = "data_label";
+						label.innerHTML = graphdata.rows[j] + "<br />/" + (graphdata.rows[j] + 1);
+
+						datacol.appendChild(container);
+						datacol.appendChild(label);
+
+						col.appendChild(datacol);
+					}
+
+					graph.appendChild(col);
+				}
+
+				var ddl,option;
+
+				ddl = document.getElementById("ddlStat");
+
+				for (var i=0;i<graphdata.stats.length;i++)
+				{
+					option = document.createElement("option");
+					option.text = graphdata.stats[i];
+					option.value = graphdata.stats[i];
+					ddl.add(option);
+				}
+
+				displayLegend();
+				displayData();
+			}
+
+			function displayData()
+			{
+				var stat = document.getElementById("ddlStat").value;
+
+				var max = getMaxStatistic(stat);
+				var percentage,nextpercentage,actual,nextactual,margintop,nextmargintop;
+				var node,line,tx;
+
+				for (var i=0;i<graphdata.cols.length;i++)
+				{
+					for (var j=0;j<graphdata.rows.length;j++)
+					{
+						actual = getStatistic(graphdata.cols[i],graphdata.rows[j],stat);
+						percentage = 100 - ((actual/max) * 100);
+						margintop = ((percentage/100 * (0.8*500)) -5);
+
+						node = document.getElementById("node_" + i + "_" +j);
+						node.style.marginTop = margintop + "px";
+						node.innerHTML = actual;
+
+						if (j<graphdata.rows.length-1)
+						{
+							nextactual = getStatistic(graphdata.cols[i],graphdata.rows[j+1],stat);
+							nextpercentage = 100 - ((nextactual/max) * 100);
+							nextmargintop = ((nextpercentage/100 * (0.8*500)) -5);
+
+							tx = getLineTransform((margintop-nextmargintop),200);
+
+							line = document.getElementById("line_" + i + "_" + j);
+							line.style.width = tx.width + "px";
+							line.style.transform = "rotate(" + tx.rotate + "deg)";
+						}
+					}
+				}
+
+				displayScale(max);
+			}
+
+			function getLineTransform(o,a)
+			{
+				var angle, hypotenuse;
+
+				if (o==0)
+				{
+					hypotenuse = a;
+					angle = 0;
+				}
+				else
+				{
+					hypotenuse = Math.hypot(Math.abs(o),a).toFixed(0);
+
+					angle = getDegrees(Math.atan((Math.abs(o)/a))).toFixed(1);
+
+					if (o>0)
+					{
+						angle = angle * -1;
+					}
+				}
+
+				return {"rotate":angle,"width":hypotenuse+100};
+			}
+
+			function getDegrees(radians) {
+				return radians * 180 / Math.PI;
+			};
+
+			function getStatistic(data,row,stat)
+			{
+				if (data==undefined) return 0;
+
+				var temp;
+
+				temp = data.stats.filter(function (x) {return x.year==row;});
+
+				if (temp.length>0)
+				{
+					return temp[0][stat];
+				}
+
+				return 0;
+			}
+
+			function getMaxStatistic(stat)
+			{
+				var max=1;
+
+				for (var i=0;i<graphdata.cols.length;i++)
+				{
+					for (var j=0;j<graphdata.cols[i].stats.length;j++)
+					{
+						if (graphdata.cols[i].stats[j][stat]>max)
+						{
+								max = graphdata.cols[i].stats[j][stat];	
+						}
+					}
+				}
+
+				if (max % 10 == 0)
+				{
+					return max+10;
+				}
+				else
+				{
+					return max - (max % 10) + 10;
+				}
+			}
+
+			function displayScale(maxval)
+			{
+				var scale = document.getElementById("scale_container");
+				scale.innerHTML="";
+
+				var units = maxval/10;
+				var data_unit;
+
+				for (var i=units;i>=1;i--)
+				{
+					data_unit = document.createElement("div");
+					data_unit.className = "scale_unit";
+					data_unit.style.height = (100/units) + "%";
+					data_unit.innerHTML = i * 10;
+
+					scale.appendChild(data_unit);
+				}
+			}
+
+			function displayLegend()
+			{
+				var legend = document.getElementById("legend_container");
+				legend.innerHTML = "";
+
+				var color,label;
+				var row;
+
+				for (var i=0;i<graphdata.cols.length;i++)
+				{
+					color = document.createElement("div");
+					color.className = "legend_color";
+					color.style.backgroundColor=graphdata.cols[i].color;
+
+					label = document.createElement("div");
+					label.className = "legend_label";
+					label.innerHTML=graphdata.cols[i].title;
+
+					row = document.createElement("div");
+					row.className = "legend_row";
+
+					row.appendChild(color);
+					row.appendChild(label);
+					legend.appendChild(row);
+				}
+			}
+		</script>
+	</head>
+	
+	<body onload="populate();">
+		<div id="graph_container">
+			<div id="scale_container">
+
+			</div>
+
+			<div id="datacol_container">
+
+			</div>
+		</div>
+
+		<div id="legend_container">
+
+		</div>
+
+		<select id="ddlStat" onchange="displayData();">
+
+		</select>
+	</body>
