@@ -59,6 +59,7 @@
 				width:10px;
 				height:10px;
 				margin-left:0%;
+				-webkit-transition:all 1s;
 				transition:all 1s;
 				color:#FFFFFF;
 				font-weight:bold;
@@ -72,7 +73,9 @@
 				height:2px;
 				margin-left:5px;
 				margin-top:-5px;
+				-webkit-transform-origin:0% 50%;
 				transform-origin:0% 50%;
+				-webkit-transition:all 1s;
 				transition:all 1s;
 			}
 
@@ -314,6 +317,7 @@
 
 							line = document.getElementById("line_" + i + "_" + j);
 							line.style.width = tx.width + "px";
+							line.style.WebkitTransform = "rotate(" + tx.rotate + "deg)";
 							line.style.transform = "rotate(" + tx.rotate + "deg)";
 						}
 					}
